@@ -286,6 +286,7 @@ data Person = Person {
     tall :: Double
 } deriving (Show)
 
+
 -- Sample persons
 john :: Person
 john = Person {name = "John", tall = 1.78}
@@ -296,9 +297,12 @@ mike = Person {name = "Mike", tall = 1.58}
 lily :: Person
 lily = Person {name = "Lily", tall = 1.85}
 
---changeHeight :: Person -> Person
+changeHeight :: Person -> Person
+changeHeight person
+ | tall person > 1.70 = person{tall = tall person *0.99}
+ |otherwise = person
 
--- main =    print $ changeHeight john  -- Person1 "John" 1.7622
+--main =    print $ changeHeight john  -- Person1 "John" 1.7622
 -- main =    print $ changeHeight mike  -- Person1 "Mike" 1.58
 -- main =    print $ changeHeight lily  -- Person1 "Lily" 1.8315000000000001
 
@@ -319,8 +323,8 @@ data APlayer = APlayer {
     skillLevel :: Int
 }
 
---shouldWePlay :: [APlayer] -> APlayer -> Bool
-
--- main = print $  shouldWePlay [ APlayer {playerName = "kareem", skillLevel = 4}, APlayer {playerName = "Tarek", skillLevel = 3}, APlayer {playerName = "Ali", skillLevel = 3},APlayer {playerName="Hussien", skillLevel=2}, APlayer {playerName="Ziad", skillLevel=4}] (APlayer {playerName="Gemy", skillLevel=4}) -- False
--- main = print $  shouldWePlay [ APlayer {playerName = "kareem", skillLevel = 5}, APlayer {playerName = "Tarek", skillLevel = 4}, APlayer {playerName = "Ali", skillLevel = 3},APlayer {playerName="Hussien", skillLevel=2}, APlayer {playerName="Ziad", skillLevel=4}] (APlayer {playerName="Gemy", skillLevel=4}) -- True
+shouldWePlay :: [APlayer] -> APlayer -> Bool
+shouldWePlay player  goalkeep = length(filter(\x->skillLevel x >=skillLevel goalkeep )player)>=3
+--main = print $  shouldWePlay [ APlayer {playerName = "kareem", skillLevel = 4}, APlayer {playerName = "Tarek", skillLevel = 3}, APlayer {playerName = "Ali", skillLevel = 3},APlayer {playerName="Hussien", skillLevel=2}, APlayer {playerName="Ziad", skillLevel=4}] (APlayer {playerName="Gemy", skillLevel=4}) -- False
+--main = print $  shouldWePlay [ APlayer {playerName = "kareem", skillLevel = 5}, APlayer {playerName = "Tarek", skillLevel = 4}, APlayer {playerName = "Ali", skillLevel = 3},APlayer {playerName="Hussien", skillLevel=2}, APlayer {playerName="Ziad", skillLevel=4}] (APlayer {playerName="Gemy", skillLevel=4}) -- True
 
