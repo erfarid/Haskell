@@ -2,11 +2,11 @@ module ExTree where
 
 import Data.List (sort)
 
-main :: IO ()
--- Definition of a binary tree
-data Tree a = Node a (Tree a) (Tree a)
-            | Leaf
-            deriving (Show)
+-- main :: IO ()
+-- -- Definition of a binary tree
+-- data Tree a = Node a (Tree a) (Tree a)
+--             | Leaf
+--             deriving (Show)
 -- Binary tree: https://www.geeksforgeeks.org/binary-tree-data-structure/
 
 tree1 :: Tree Int
@@ -200,29 +200,47 @@ task3 (Node x left right)
   rest = task3 left ++ task3 right 
   
 
-main = do
-     print $ task3 tree3 --[(1,3,-1),(3,-1,8)]
---     print $ task3 tree2 --[(1,3,4),(3,-1,-1),(5,-1,-1)]
+-- main = do
+--      print $ task3 tree3 --[(1,3,-1),(3,-1,8)]
+-- --     print $ task3 tree2 --[(1,3,4),(3,-1,-1),(5,-1,-1)]
 
 -- 7. Search for a value in the tree
---searchT :: Tree Int -> Int -> Bool
-
+searchT :: Tree Int -> Int -> Bool
+searchT Leaf  _ = False
+searchT (Node x left right) value 
+ |value==x=True
+ |otherwise =searchT left value || searchT right value  
 -- main = do
 --     print $ searchT tree2 10 --False
 --     print $ searchT tree2 1 --True
 
 -- 8. Given a tree and an integer. Find all the nodes that are equal to the 
 --    integer and give the sum of their direct children. (Leaf count as 0).
+-- Define the Tree data structure
+data Tree a = Leaf
+            | Node a (Tree a) (Tree a)
+            deriving (Show)
+
+-- Helper function to extract the value of a node (Leaf is considered 0)
 exNode :: Tree Int -> Int
 exNode Leaf = 0
-exNode (Node x _ _) = x -- It's similar to extractN, but leaf is counted as 0.
+exNode (Node x _ _) = x
 
---f8 :: Tree Int -> Int -> Int
+-- Function to find all nodes equal to the target value and sum their direct children
+f8 :: Tree Int -> Int -> Int
+f8 Leaf _ = 0  -- Base case: empty tree contributes 0
+f8 (Node x left right) target
+    | x == target = exNode left + exNode right + rest  -- If current node matches target, add children
+    | otherwise   = rest  -- Otherwise, continue searching in the subtrees
+  where
+    rest = f8 left target + f8 right target  -- Search both left and right subtrees
+
+
 
 -- main =  print $ f8 (Node 2 Leaf Leaf) 3  -- 0
 -- main =  print $ f8 (Node 3 (Node 1 Leaf Leaf) (Node 1 Leaf Leaf)) 3  -- 2
 -- main =  print $ f8 (Node 1 (Node 0 Leaf Leaf) (Node 2 Leaf Leaf)) 1  -- 2
--- main =  print $ f8 (Node 2 (Node 1 Leaf Leaf) (Node 2 (Node 3 Leaf Leaf) (Node 1 Leaf Leaf))) 2 -- 7
+--main =  print $ f8 (Node 2 (Node 1 Leaf Leaf) (Node 2 (Node 3 Leaf Leaf) (Node 1 Leaf Leaf))) 2 -- 7
 -- main =  print $ f8 (Node 2 (Node 1 Leaf Leaf) (Node 2 Leaf (Node 1 Leaf Leaf))) 2 -- 4
 
 -- 9. Replace nodes equal to n with 0
@@ -239,6 +257,7 @@ data Person = Person {
     name :: String,
     birthday :: (Int, Int, Int)
 } deriving (Show)
+
 
 -- Sample trees for testing
 t1 :: Tree Person
@@ -268,9 +287,21 @@ over18 (year, _, _)
 addString :: Person -> Person
 addString p = p { name = name p ++ "_over18" }
 
---updateName :: Tree Person -> Tree Person
+addString1 :: Person -> Person
+addString1 (Person name bir) = Person (name ++ "_over18") bir
 
--- main = print $ updateName t1
+
+-- In Haskell, when you define a function that operates on a record type, you can pattern match on the whole record,
+--  but you cannot specify the field names inside the pattern match like name = something. 
+
+
+updateName :: Tree Person -> Tree Person
+updateName Leaf = Leaf  -- Base case: an empty tree is unchanged
+updateName (Node p left right)
+    | over18 (birthday p) = Node (addString p) (updateName left) (updateName right)
+    | otherwise = Node p (updateName left) (updateName right)
+
+--main = print $ updateName t1
 -- main = print $ updateName t2
 -- main = print $ updateName t3
 
@@ -280,9 +311,30 @@ data BST a = BSTNode a (BST a) (BST a)
            | BSTLeaf
            deriving (Show)
 
--- https://www.geeksforgeeks.org/binary-search-tree-data-structure/
---isBST :: BST Int -> Bool
+-- data Tree a = Leaf | Node a (Tree a) (Tree a)
 
+--so i can write the leaf in the starting or ending it does not affect the function 
+
+-- tree13 :: Tree Int
+-- tree13 = Node 0 
+--             (Node 1 
+--                 (Node 3 Leaf (Node 8 Leaf Leaf)) 
+--                 Leaf)
+--             (Node 2 Leaf Leaf)
+-- -- https://www.geeksforgeeks.org/binary-search-tree-data-structure/
+isBST :: BST Int -> Bool
+isBST BSTLeaf = True
+isBST (BSTNode value left right) =
+    isValid left minBound value && isValid right value maxBound
+
+isValid :: BST Int -> Int -> Int -> Bool
+isValid BSTLeaf _ _ = True
+isValid (BSTNode v left right) minVal maxVal =
+    v > minVal && v < maxVal &&
+    isValid left minVal v &&
+    isValid right v maxVal
+
+    
 -- Inorder
 treeToList :: BST a -> [a]
 treeToList BSTLeaf = []
