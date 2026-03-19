@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository contains multiple Haskell programs demonstrating core **Haskell ** and functional programming principles. It is designed as a learning and practice project to explore Haskell’s **lists, tuples, dictionaries (associative lists), operators, type classes, and more**.  
+This repository contains multiple Haskell programs demonstrating core **Haskell Concepts** and functional programming principles. It is designed as a learning and practice project to explore Haskell’s **lists, tuples, dictionaries (associative lists), operators, type classes, and more**.  
 
 Each file focuses on a specific topic, providing examples and exercises to reinforce understanding.
 
